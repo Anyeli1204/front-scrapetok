@@ -11,6 +11,18 @@ CS2031 - Desarrollo Basado en Plataforma
 | Josue Carrillo Paurinotto   | josue.carrillo@utec.edu.pe |
 |Luis Enrique Cahuana Garcia  | luis.cahuana@utec.edu.pe|
 
+## Indice
+- [Introducción]
+- [Objetivos del Proyecto]
+- [Identificación del Problema o Necesidad]
+- [Descripción de la Solución]
+- [Modelo de Entidades]
+- [Testing y Manejo de Errores]
+- [Medidas de Seguridad Implementadas]
+- [Eventos y Asincronía]
+- [GitHub]
+- [Conclusión]
+- [Referencias]
 
 
 ## Introducción
