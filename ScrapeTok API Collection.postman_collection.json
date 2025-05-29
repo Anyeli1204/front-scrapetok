@@ -1,0 +1,622 @@
+{
+	"info": {
+		"_postman_id": "63790664-d43b-4320-82b9-279807e60960",
+		"name": "ScrapeTok API Collection",
+		"description": "## 🛠 Instrucciones para usar la aplicación\n\n### 🔹 Paso 1: Iniciar el servidor local de APIFY\n\nAntes de usar la aplicación, debes iniciar el servidor local de APIFY (desarrollado en Python).\n\nEste servidor se encuentra en la rama `PythonApifyServer`.\n\n#### Pasos (desde Visual Studio Code en la raíz del proyecto Python):\n\n```\npip install fastapi\npip install uvicorn\npip install apify-client\npython -m uvicorn ApifyConnectionController:app --host 0.0.0.0 --port 8000 --reload\n\n ```\n\n---\n\n## 👤 Registro y autenticación\n\n1. **Crear Usuario (****`Crear Usuario`****)**\n    \n    Se registra un nuevo usuario con los datos requeridos.\n    \n2. **Iniciar sesión (****`SignIn User`****)**\n    \n    Usar el mismo body del registro.\n    \n    Se genera un **token JWT** que debe incluirse en el **header** **`Authorization`** de las siguientes peticiones.\n    \n\n✅ Este mismo proceso aplica también para los administradores.\n\n---\n\n## 🔍 Explicación de los endpoints\n\n### 🔐 Roles\n\n- **`UpgradeToAdmin`**\n    \n    Un administrador le otorga permisos de admin a un usuario.\n    \n    Requiere: `idUser` y `idAdmin`.\n    \n\n---\n\n### 👤 Perfiles y preguntas\n\n- **`AdminProfile`**\n    \n    Muestra la información del administrador, incluyendo los filtros usados al scrapear, su historial y las cuentas de TikTok que analizó.\n    \n    Requiere: `idAdmin`.\n    \n- **`UserProfile`**\n    \n    Muestra la información de un usuario registrado.\n    \n    Requiere: `idUser`.\n    \n- **`MakeQuestion`**\n    \n    El usuario hace una pregunta en la plataforma.\n    \n    Requiere: `idUser`.\n    \n- **`AnswerQuestion`**\n    \n    Un administrador responde una pregunta.\n    \n    Requiere: `idAdmin` y `idPregunta`.\n    \n- **`GetQuestion`**\n    \n    Devuelve todas las preguntas registradas, estén respondidas o no.\n    \n\n---\n\n### 📦 Scrapeo de datos para usuarios\n\n- **`UserApifyCallPerProfile`**\n    \n    Scrapea perfiles de TikTok.\n    \n    Requiere: `idUser`, `fechaDesde`, `fechaHasta`, `maxVideosPorCuenta`, `cuentasTikTok` (separadas por comas).\n    \n- **`UserApifyCallPerKeyword`**\n    \n    Scrapea posts usando palabras clave.\n    \n    Requiere: `idUser`, `keywords` (separadas por comas), `maxPostsPorKeyword`.\n    \n- **`UserApifyCallPerHashtag`**\n    \n    Scrapea posts usando hashtags.\n    \n    Requiere: `idUser`, `hashtags` (separados por comas), `maxPostsPorHashtag`.\n    \n\n---\n\n### 🌍 Scrapeo general por parte del administrador\n\n- **`AdminApifyCallPerKeyWords`**\n    \n    Scrapea diariamente los posts más virales según palabras clave (ej: \"deporte\", \"cocina\", \"autoayuda\").\n    \n    Requiere: `idAdmin`, `keywords`.\n    \n    🔸 Por defecto, se scrapean **10 posts por cada palabra clave**.\n    \n    🔸 Devuelve:\n    \n    - La data procesada por la app a partir de lo que devuelve APIFY.\n        \n    - Los datos necesarios para generar los gráficos del frontend.\n        \n- **`AdminApifyCallPerKeyHashtags`**\n    \n    Igual que el anterior, pero usando hashtags en lugar de palabras clave.\n    \n    Requiere: `idAdmin`, `hashtags`.\n    \n    🔸 También se ejecuta diariamente.\n    \n    🔸 Por defecto, se scrapean **10 posts por cada hashtag**.\n    \n\n---\n\n### 📧 Envío de resumen diario\n\n- **`SendEmailToAllUsers`**\n    \n    Se usa después del scrapeo general del admin.\n    \n    Recibe: los datos de los posts más virales por cada keyword o hashtag.\n    \n    ➕ El contenido ya debe estar formateado desde el frontend.\n    \n    📩 El mensaje se envía por correo a todos los usuarios registrados, como un resumen de noticias del día.\n    \n\n---\n\n### 📊 Consultas a la base de datos\n\n- **`MakeDBQueries`**\n    \n    Permite hacer filtros personalizados sobre los datos almacenados.\n    \n    Requiere: `idUser` y filtros como `minLikes`, `minViews`, `postId`, etc.\n    \n    ✅ Este endpoint solo se puede usar **después de haber hecho al menos un scrapeo**.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43479410",
+		"_collection_link": "https://gerard-9690572.postman.co/workspace/Gerard's-Workspace~89e55100-a3c3-41ef-8fca-cf2ad92b2f1b/collection/43479410-63790664-d43b-4320-82b9-279807e60960?action=share&source=collection_link&creator=43479410"
+	},
+	"item": [
+		{
+			"name": "Crear Usuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"bruno.vega@utec.edu.pe\",\r\n  \"password\": \"bruno123\",\r\n  \"firstname\": \"bruno\",\r\n  \"lastname\": \"utec\",\r\n  \"username\": \"brunoutec\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"luis.cahuana@gmail.com\",\r\n  \"password\": \"luis_admin1234\",\r\n  \"firstname\": \"Luis\",\r\n  \"lastname\": \"Cahuana\",\r\n  \"username\": \"LuisCahuana_Admin1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/signupadmin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"signupadmin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upgrade to admin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWlzX2FkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0ODM3NDY1OCwiZXhwIjoxNzQ4NDEwNjU4fQ.VYysfvNNBrx0DFusw1iqnEew0wY6J4JGka-kGn6CE0c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userid\": 1,\r\n  \"adminId\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/upgradetoadmin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"upgradetoadmin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adminprofile",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWlzX2FkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0ODM4MTIyNiwiZXhwIjoxNzQ4NDE3MjI2fQ.A28ahy_FqClkNKmuzhhygINPqxr4kvUGhkhkveHlz2A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/profile/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"profile",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserProfile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQuaXJ1cmlAdXRlYy5lZHUucGUiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0ODM4MTIwMSwiZXhwIjoxNzQ4NDE3MjAxfQ.qITQezQTb2EMD0hnXJyWrDjpABXxsfY0GcVVnKj8Grk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/profile/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"profile",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeQuestion",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQuaXJ1cmlAdXRlYy5lZHUucGUiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0ODM4MTIwMSwiZXhwIjoxNzQ4NDE3MjAxfQ.qITQezQTb2EMD0hnXJyWrDjpABXxsfY0GcVVnKj8Grk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": 1,\r\n  \"questionDescription\": \"¿Cómo se debe usar correctamente los filtros de scraping?\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/createQuestion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"createQuestion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetQuestion",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQuaXJ1cmlAdXRlYy5lZHUucGUiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0ODM4MTIwMSwiZXhwIjoxNzQ4NDE3MjAxfQ.qITQezQTb2EMD0hnXJyWrDjpABXxsfY0GcVVnKj8Grk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/getAllQuestions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"getAllQuestions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AnswerQuestion",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWlzX2FkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0ODM3NDY1OCwiZXhwIjoxNzQ4NDEwNjU4fQ.VYysfvNNBrx0DFusw1iqnEew0wY6J4JGka-kGn6CE0c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"ANSWERED\",\r\n  \"questionId\": 1,\r\n  \"adminId\": 2,\r\n  \"answerDescription\": \"Puedes usar hashtags relacionados a educación y ciencia.\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/answerQuestion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"answerQuestion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignIn User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"bruno.vega@utec.edu.pe\",\r\n  \"password\": \"bruno123\",\r\n  \"firstname\": \"bruno\",\r\n  \"lastname\": \"utec\",\r\n  \"username\": \"brunoutec\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignIn Admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"luis.cahuana@gmail.com\",\r\n  \"password\": \"luis_admin1234\",\r\n  \"firstname\": \"Luis\",\r\n  \"lastname\": \"Cahuana\",\r\n  \"username\": \"LuisCahuana_Admin1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Apify Call Per Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JnZUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0ODM3NTMxOSwiZXhwIjoxNzQ4NDExMzE5fQ.5a6TOAeinzux56PsMie-atWbBKGH8-o8dmbOrdfUoAk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\" : 1,\r\n    \"dateFrom\": \"2025-05-17\",\r\n    \"dateTo\" : \"2025-05-24\",\r\n    \"nlastPostByHashtags\": 2,\r\n    \"tiktokAccount\": \"flaviaporrasm, stefanylavado\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/apifycall",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"apifycall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin Apify Call Per KeyWords",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWlzX2FkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0ODM3NDY1OCwiZXhwIjoxNzQ4NDEwNjU4fQ.VYysfvNNBrx0DFusw1iqnEew0wY6J4JGka-kGn6CE0c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"adminId\": 2,\r\n  \"keyWords\": \"peru, lima\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/apifycall",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"apifycall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin Apify Call Per Hashtag (Top Globales)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWlzX2FkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0ODM3NDY1OCwiZXhwIjoxNzQ4NDEwNjU4fQ.VYysfvNNBrx0DFusw1iqnEew0wY6J4JGka-kGn6CE0c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"adminId\": 2,\r\n  \"hashtags\": \"comedia,entretenimiento\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/apifycall",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"apifycall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Apify Call Per KeyWord",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JnZUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0ODM3NTMxOSwiZXhwIjoxNzQ4NDExMzE5fQ.5a6TOAeinzux56PsMie-atWbBKGH8-o8dmbOrdfUoAk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\" : 1,\r\n    \"keyWords\": \"messi, universitario\",\r\n    \"nlastPostByHashtags\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/apifycall",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"apifycall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Apify Call Per Hashtag",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JnZUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0ODM3NTMxOSwiZXhwIjoxNzQ4NDExMzE5fQ.5a6TOAeinzux56PsMie-atWbBKGH8-o8dmbOrdfUoAk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\" : 1,\r\n    \"hashtags\": \"peru, utec, barcelona\",\r\n    \"nlastPostByHashtags\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/apifycall",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"apifycall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Email to All Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWlzX2FkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc0ODM3NDY1OCwiZXhwIjoxNzQ4NDEwNjU4fQ.VYysfvNNBrx0DFusw1iqnEew0wY6J4JGka-kGn6CE0c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {   \r\n        \"adminId\": 2,\r\n        \"usedHashTag\": \"#cristiano, #ronaldo, #football, #viral, #cr7, #moments, #justforfun, #soccer, #tiktokfootball, #tiktok, #premierleague, #laliga, #ucl\",    \r\n        \"datePosted\": \"2025-05-26\",\r\n        \"usernameTiktokAccount\": \"sporx.com\",\r\n        \"postURL\": \"https://www.tiktok.com/@sporx.com/video/7508795996483144967\",\r\n        \"views\": 19200,\r\n        \"likes\": 1119,\r\n        \"engagement\": 6.09\r\n    },\r\n    {\r\n        \"adminId\": 2,\r\n        \"usedHashTag\": \"#cr7, #cristiano, #ronaldo, #cristianoronaldo, #belikecristiano, #alnassr, #sportsontiktok, #football, #호날두, #soccer, #manchesterunited\",    \r\n        \"datePosted\": \"2025-05-26\",\r\n        \"usernameTiktokAccount\": \"belikecristiano\",\r\n        \"postURL\": \"https://www.tiktok.com/@belikecristiano/video/7508785656919870738\",\r\n        \"views\": 4084,\r\n        \"likes\": 294,\r\n        \"engagement\": 9.06\r\n    }\r\n]\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/sendemail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"sendemail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeDBQueries",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JnZUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc0ODM3ODEyMCwiZXhwIjoxNzQ4NDE0MTIwfQ.9e_hYoAEJt-VIe3_T7FH-QmLxdiXizZd-hApOUsLjiE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": 1,\r\n  \"hashtags\": \"#peru,#utec,#barcelona\",\r\n  \"keywords\": \"web,todo\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/dbquery",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"dbquery"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
