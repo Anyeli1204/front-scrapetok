@@ -68,12 +68,14 @@ Es relevante solucionar el problema pues el mercado de Tik Tok es muy extenso pe
 
 ### Mensaje Importante
 
-Antes de utilizar la aplicación, es necesario iniciar el servidor local de APIFY desarrollado en Python. Este servidor se encuentra en la rama PythonApifyServer.
+>Antes de utilizar la aplicación, es necesario iniciar el servidor local de APIFY desarrollado en Python. Este servidor se encuentra en la rama PythonApifyServer.
 Para ejecutarlo, hay que asegurarse de estar en dicha rama y luego correr el siguiente comando en la raíz del proyecto Python (Visual Studio Code):
+```text 
 pip fastapi
 pip uvicorn
 pip apify-client
 python -m uvicorn ApifyConnectionController:app --host 0.0.0.0 --port 8000 --reload
+``` 
 
 ### Funcionalidades Implementadas:
 
@@ -152,6 +154,7 @@ Durante el desarrollo del backend de ScrapeTok, se implementaron diferentes nive
 - **Pruebas Unitarias**
 - **Pruebas con TestContainers**
   Se utilizaron herramientas como JUnit junto con TestContainers para probar el correcto funcionamiento de la capa de persistencia. Se verificó que la tabla correspondiente a la entidad se cree correctamente en la base de datos, así como las operaciones básicas de CRUD.
+  >Para que funcione correctamente, agregar manualmente las variables de entorno en "All in ScrapeTok".
 - **Pruebas de API**
   Se utilizaron herramientas como Postman para probar los endpoints expuestos, verificando códigos de respuesta HTTP, estructura del JSON y comportamiento esperado ante entradas válidas e inválidas.
 - **Validación de DTOs y Anotaciones**
@@ -168,14 +171,15 @@ El testing permitió identificar y corregir errores en múltiples áreas, como:
 ### Manejo de Errores
 
 A través de la clase GlobalExceptionHandler, se interceptan y gestionan los errores lanzados desde los servicios y controladores.
-| Excepción | Código HTTP | Significado |
-|-----------|-----------|-----------|
-| ResourceNotFoundException | 404 Not Found | Se lanza cuando un recurso no existe en la BD |
-| IllegalArgumentException | 400 Bad Request | Se lanza por argumentos inválidos del cliente |
-| ApifyConnectionException | 502 Bad Gateway | Falla al conectarse con el servicio de Apify |
-| ServiceUnavailableException | 503 Service Unavailable | Servicios temporales fuera de línea |
-| MethodArgumentNotValidException | 400 Bad Request | Errores de validación en las solicitudes |
-| Exception | 500 Internal Server Error | Fallos no previstos en la aplicación |
+
+| Excepción                        | Código HTTP            | Significado                                                 |
+|----------------------------------|------------------------|-------------------------------------------------------------|
+| ResourceNotFoundException     | 404 Not Found          | Se lanza cuando un recurso no existe en la base de datos    |
+| IllegalArgumentException      | 400 Bad Request        | Se lanza por argumentos inválidos del cliente               |
+| ApifyConnectionException      | 502 Bad Gateway        | Falla al conectarse con el servicio de Apify                |
+| ServiceUnavailableException   | 503 Service Unavailable| Servicios temporales fuera de línea                         |
+| MethodArgumentNotValidException | 400 Bad Request      | Errores de validación en las solicitudes                    |
+| Exception                     | 500 Internal Server Error | Fallos no previstos en la aplicación                    |
 
 ## Medidas de Seguridad Implementadas
 
