@@ -9,10 +9,8 @@ public class UserSignUpResponseDTO {
     private Long id;
     private String email;
     private String password;
-    private String firstname;
-    private String lastname;
     private String username;
-    private LocalDate creationDate;
-
+    private String role;
+    private String token;
 }
 

@@ -85,8 +85,23 @@ public class AuthorizationService {
 
         try {
             GeneralAccount saved = generalAccountRepository.save(newUser);
+            Authentication authentication = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String role = userDetails.getAuthorities().stream()
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No role found"))
+                    .getAuthority()
+                    .replace("ROLE_", "");
+
+            String token = jwtUtil.generateToken(userDetails.getUsername(), role);
             applicationEventPublisher.publishEvent(new AlertEmailEvent(this, request.getEmail(), subject, body.toString()));
-            return modelMapper.map(saved, UserSignUpResponseDTO.class);
+            UserSignUpResponseDTO dto = modelMapper.map(saved, UserSignUpResponseDTO.class);
+            dto.setToken(token);
+            dto.setRole(role);
+            return dto;
         } catch (DataIntegrityViolationException e) {
             throw new EmailAlreadyInUseException("Email is already in use");
         }
@@ -159,7 +174,11 @@ public class AuthorizationService {
                     .replace("ROLE_", "");
 
             String token = jwtUtil.generateToken(userDetails.getUsername(), role);
-            return new LoginResponseDTO(token, role);
+            GeneralAccount usuario = generalAccountRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User with id " + request.getEmail() + " not found"));
+            LoginResponseDTO dto = modelMapper.map(usuario,LoginResponseDTO.class);
+            dto.setToken(token);
+            dto.setRole(role);
+            return dto;
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Credenciales inválidas");
         } catch (Exception e) {
