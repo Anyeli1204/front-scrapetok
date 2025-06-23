@@ -1,10 +1,7 @@
 package com.example.scrapetok.infraestructure;
 
 import com.example.scrapetok.application.AuthorizationService;
-import com.example.scrapetok.domain.DTO.LoginRequestDTO;
-import com.example.scrapetok.domain.DTO.LoginResponseDTO;
-import com.example.scrapetok.domain.DTO.UpgradeToAdminRequestDTO;
-import com.example.scrapetok.domain.DTO.UserSignUpRequestDTO;
+import com.example.scrapetok.domain.DTO.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -40,6 +39,12 @@ public class AuthorizationController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<?> visualizeAllUsers() {
+        List<VisualizeAllUsersDTO> response = authorizationService.getAllUsers();
+        return ResponseEntity.ok(response);
+    }
 
     // Admin concede rol de admin a User
     @PatchMapping("/upgradetoadmin")

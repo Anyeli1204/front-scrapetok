@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -159,6 +161,17 @@ public class AuthorizationService {
         modelMapper.map(nuevoAdmin, responseDTO);
         return responseDTO;
     }
+
+    public List<VisualizeAllUsersDTO> getAllUsers() {
+        List<GeneralAccount> user = generalAccountRepository.findAll();
+        List<VisualizeAllUsersDTO> dtos = new ArrayList<>();
+        for (GeneralAccount usuario : user) {
+            VisualizeAllUsersDTO dto =  modelMapper.map(usuario,VisualizeAllUsersDTO.class);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
 
     public LoginResponseDTO login(LoginRequestDTO request) {
         try {
