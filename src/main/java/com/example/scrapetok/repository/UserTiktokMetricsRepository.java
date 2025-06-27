@@ -14,4 +14,5 @@ import java.util.List;
 public interface UserTiktokMetricsRepository extends JpaRepository<UserTiktokMetrics,Long>, JpaSpecificationExecutor<UserTiktokMetrics> {
     List<UserTiktokMetrics> findUsernameTiktokAccountByUserId(Long userId);
     List<UserTiktokMetrics> findAll(Specification<UserTiktokMetrics> spec, Sort sort);
+
 }

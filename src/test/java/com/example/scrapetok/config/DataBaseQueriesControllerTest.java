@@ -72,7 +72,7 @@ public class DataBaseQueriesControllerTest {
         dto.setTimeTracking(LocalTime.of(15, 0));
 
         // Simular comportamiento del servicio
-        Mockito.when(dbQueryService.buscarConFiltros(Mockito.any())).thenReturn(Collections.singletonList(dto));
+        //Mockito.when(dbQueryService.buscarConFiltros(Mockito.any())).thenReturn(Collections.singletonList(dto));
 
         // Ejecutar request y verificar
         mockMvc.perform(post("/user/dbquery")
