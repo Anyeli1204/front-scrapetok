@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*")
-@PreAuthorize("hasAnyRole('USER')")
+@PreAuthorize("hasRole('USER')")
 @RequestMapping("/user")
 public class DataBaseQueriesController {
     @Autowired
