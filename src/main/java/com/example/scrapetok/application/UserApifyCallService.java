@@ -101,7 +101,7 @@ public class UserApifyCallService {
         try {
             ApifyResponse = apifyServerConnection.fetchDataFromApify(jsonInput, filter);
         } catch (Exception e) {
-            throw new ApifyConnectionException("Could not connect to the Apify server.");
+            throw new ApifyConnectionException("Could not connect to the Apify server." + e.getMessage());
         }
 
         // Procesar data extraída de APIFY

@@ -5,6 +5,7 @@ import com.example.scrapetok.domain.enums.ApifyRunStatus;
 import com.example.scrapetok.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -14,8 +15,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 
+
 @Service
 public class ApifyServerConnection {
+    @Value("${apify.url}")
+    private String apifyUrl;
 
     // Lógica para user -> user scraping
     public Map<String,Object> fetchDataFromApify(Map<String,Object> jsonInput, UserApifyFilters filter) throws IOException, ResourceNotFoundException, IllegalStateException {
@@ -24,7 +28,7 @@ public class ApifyServerConnection {
         // Convertir el diccionario a un JSON usando Jackson
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonBody = objectMapper.writeValueAsString(jsonInput);
-        String apiURL = "http://localhost:8000";
+        String apiURL = apifyUrl;
 
         // Setup HTTP connection
         String ApiURL = apiURL + "/APIFYCALL";
@@ -56,6 +60,17 @@ public class ApifyServerConnection {
                 response.append(inputLine);
             }
 
+
+            String body = response.toString();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                filter.setApifyRunStatus(ApifyRunStatus.FAILED);
+                // Puedes lanzar excepción, o devolver un Map:
+                return Map.of(
+                        "Error",
+                        "HTTP " + responseCode + ": " + body
+                );
+            }
+
             Map<String, Object> responseMap = objectMapper.readValue(response.toString(), new TypeReference<>() {});
             String prettyJson = objectMapper
                     .writerWithDefaultPrettyPrinter()
@@ -75,8 +90,10 @@ public class ApifyServerConnection {
             } else if (responseMap.containsKey("Error")) {
                 filter.setApifyRunStatus(ApifyRunStatus.FAILED);
                 return Map.of("Error", responseMap.get("Error"));
+            } else {
+                filter.setApifyRunStatus(ApifyRunStatus.FAILED);
+                return Map.of("Error", "Respuesta inesperada: " + body);
             }
-            throw new IllegalStateException("Internal Server error: Can't establish connection to Apify server");
         }
     }
 
@@ -86,7 +103,7 @@ public class ApifyServerConnection {
         // Convertir el diccionario a un JSON usando Jackson
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonBody = objectMapper.writeValueAsString(jsonInput);
-        String apiURL = "http://localhost:8000";
+        String apiURL = apifyUrl;
 
         // Setup HTTP connection
         String ApiURL = apiURL + "/APIFYCALL";

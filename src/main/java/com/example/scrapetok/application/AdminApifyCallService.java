@@ -44,7 +44,7 @@ public class AdminApifyCallService {
             jsonInput.put("apifyToken", apifyToken);
             jsonInput.put("excludePinnedPosts", true);
             // Por defecto, ADMIN scrapea 20 videos por hashtags
-            jsonInput.put("resultsPerPage", 10);
+            jsonInput.put("resultsPerPage", 5);
             List<String> video = new ArrayList<>();
             video.add("videos");
             jsonInput.put("profileScrapeSections", video);
@@ -78,8 +78,8 @@ public class AdminApifyCallService {
             dataSet.add(data);
 
             // CONSULTAS SQL A DATOS MÁS RECIENTES GUARDADOS DÍA DE HOY OBTENIDO POR ADMIN -> PROTOCOLO CUANDO ADMIN HACE SCRAPEO GENERAL
-            List<AdminTikTokMetricsRepository.RegionVideoCount> resultados = adminTikTokMetricsRepository.countTodayRecentVideosByRegion();
-            dataSet.add(resultados);
+            //List<AdminTikTokMetricsRepository.RegionVideoCount> resultados = adminTikTokMetricsRepository.countTodayRecentVideosByRegion();
+            //dataSet.add(resultados);
 
             List<AdminTikTokMetricsRepository.HashtagViewCount> obtenerVistasPorHashtagHoy = adminTikTokMetricsRepository.countTodayViewsByHashtag();
             dataSet.add(obtenerVistasPorHashtagHoy);
@@ -87,8 +87,8 @@ public class AdminApifyCallService {
             List<AdminTikTokMetricsRepository.SoundViewCount> ViewsVsIdSound = adminTikTokMetricsRepository.countTodayViewsBySound();
             dataSet.add(ViewsVsIdSound);
 
-            List<AdminTikTokMetricsRepository.RegionMetricsCount> RegionVsCount = adminTikTokMetricsRepository.countTodayViewsAndLikesByRegion();
-            dataSet.add(RegionVsCount);
+            //List<AdminTikTokMetricsRepository.RegionMetricsCount> RegionVsCount = adminTikTokMetricsRepository.countTodayViewsAndLikesByRegion();
+            //dataSet.add(RegionVsCount);
 
 
             /*List<Map<String,Object>> usernameVsViews = adminTikTokMetricsRepository.findViewsGroupedByUsernameForToday();
