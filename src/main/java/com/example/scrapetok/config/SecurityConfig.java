@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import com.example.scrapetok.config.CorsProperties;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +24,11 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtRequestFilter jwtFilter;
+    private final CorsProperties corsProperties;
 
-    public SecurityConfig(JwtRequestFilter jwtFilter) {
+    public SecurityConfig(JwtRequestFilter jwtFilter, CorsProperties corsProperties) {
         this.jwtFilter = jwtFilter;
+        this.corsProperties = corsProperties;
     }
 
     @Bean
@@ -55,11 +58,13 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        var configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(corsProperties.getAllowedOrigins());
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedOrigins(List.of("*"));
-        var source = new UrlBasedCorsConfigurationSource();
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
