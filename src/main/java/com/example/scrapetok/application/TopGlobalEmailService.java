@@ -45,24 +45,28 @@ public class TopGlobalEmailService {
 
         String subject = "ScrapeTok: 🌍 Today’s Top Global TikTok Hits by Hashtag / KeyWord";
         StringBuilder body = new StringBuilder();
-        body.append("Hello!\n\n");
-        body.append("Here are today's top viral TikToks by hashtag / keyWord. Discover what’s trending globally now:\n\n");
+        body.append("<div style=\"font-family: 'Segoe UI', sans-serif; color: #333; padding: 10px; max-width: 600px; margin: auto;\">");
+
+        body.append("<h2 style=\"color: #7e22ce; text-align: center;\">🌍 Top Global TikToks del Día</h2>");
+        body.append("<p>Hola 👋,</p>");
+        body.append("<p>Te compartimos el resumen de los TikToks más virales del día según hashtags y palabras clave.</p>");
+        body.append("<hr style=\"margin: 20px 0;\"/>");
 
         for (TopGlobalEmailDTO post : posts) {
-            body.append("🔹 #").append(post.getUsedHashTag()).append("\n");
-            body.append("🎬 Video by: @").append(post.getUsernameTiktokAccount()).append("\n");
-            body.append("📅 Date Posted: ").append(post.getDatePosted()).append("\n");
-            body.append("👀 Views: ").append(String.format("%,d", post.getViews())).append("\n");
-            body.append("❤️ Likes: ").append(String.format("%,d", post.getLikes())).append("\n");
-            body.append("📊 Engagement: ").append(String.format("%.2f%%", post.getEngagement())).append("\n");
-            body.append("📎 Watch here: ").append(post.getPostURL()).append("\n");
-            body.append("------------------------------------------------------------\n\n");
+            body.append("<div style=\"border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 20px; background-color: #fafafa;\">");
+            body.append("<h3 style=\"margin-top: 0; color: #4ba3c7;\">#").append(post.getUsedHashTag()).append("</h3>");
+            body.append("<p><strong>🎬 Creador:</strong> @").append(post.getUsernameTiktokAccount()).append("</p>");
+            body.append("<p><strong>📅 Fecha:</strong> ").append(post.getDatePosted()).append("</p>");
+            body.append("<p><strong>👀 Vistas:</strong> ").append(String.format("%,d", post.getViews())).append("</p>");
+            body.append("<p><strong>❤️ Likes:</strong> ").append(String.format("%,d", post.getLikes())).append("</p>");
+            body.append("<p><strong>📊 Engagement:</strong> ").append(String.format("%.2f", post.getEngagement())).append("%</p>");
+            body.append("<p><a href=\"").append(post.getPostURL()).append("\" style=\"color: #7e22ce; text-decoration: none; font-weight: bold;\">🔗 Ver publicación</a></p>");
+            body.append("</div>");
         }
 
-        body.append("This summary is generated automatically based on latest top-performing global content.\n");
-        body.append("Your ScrapeTok Team");
-
-
+        body.append("<p style=\"font-size: 0.95rem; color: #666;\">Este resumen ha sido generado automáticamente con base en los contenidos más virales del día en ScrapeTok.</p>");
+        body.append("<p style=\"margin-top: 20px; font-weight: bold;\">— El equipo de ScrapeTok 🚀</p>");
+        body.append("</div>");
         DailyAlerts alert = new DailyAlerts();
         alert.setUserEmails(new HashSet<>(users));
         alert.setAdmin(admin);

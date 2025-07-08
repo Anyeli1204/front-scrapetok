@@ -1,6 +1,7 @@
 package com.example.scrapetok.application;
 
 import com.example.scrapetok.application.emailservice.AlertEmailEvent;
+import com.example.scrapetok.application.emailservice.WelcomeEmailEvent;
 import com.example.scrapetok.domain.AdminProfile;
 import com.example.scrapetok.domain.DTO.*;
 import com.example.scrapetok.domain.GeneralAccount;
@@ -62,28 +63,38 @@ public class AuthorizationService {
         String subject = "👋 Welcome to ScrapeTok—Let's Kick Off Your TikTok Data Adventure! 🎉";
 
         StringBuilder body = new StringBuilder();
-        body.append("Hi there 😊,").append("\n\n");
-        body.append("We’re thrilled to have you on board! 🚀 Welcome to ScrapeTok, where uncovering actionable TikTok insights is as easy as a scroll.").append("\n\n");
-        body.append("Here’s what you can look forward to in this ").append("**DEMO version (100% free, on us!)**").append(" 💯:").append("\n\n");
-        body.append("1. 📊 **Instant Analytics**").append("\n");
-        body.append("   Dive into comprehensive dashboards that surface trending creators, hashtag performance, and engagement metrics—no manual digging required.").append("\n\n");
-        body.append("2. 🌟 **General Scrape Feature (“Scrapeo General”)**").append("\n");
-        body.append("   See the top viral trends of the day, all in one place.").append("\n\n");
-        body.append("3. 🔍 **Flexible Apify Scraping**").append("\n");
-        body.append("   Filter and scrape by profile, hashtag, or keyword—so you get exactly the TikTok content you need.").append("\n\n");
-        body.append("4. 💾 **Data Export & Downloadable Charts**").append("\n");
-        body.append("   Export your raw data as CSV files, and download any generated chart directly for your reports.").append("\n\n");
-        body.append("5. 🛠️ **Technical Support (Q&A with Admin)**").append("\n");
-        body.append("   Have questions or need help? Send your support requests straight to our admins for fast, friendly assistance.").append("\n\n");
-        body.append("**Ready to get started?**").append("\n");
-        body.append("• Log in to your dashboard 🔗").append("\n");
-        body.append("• Check out our Quickstart Guide for tips on using “Scrapeo General” and other features 📖").append("\n");
-        body.append("• Join our community for best practices, use-cases, and direct support 💬").append("\n\n");
-        body.append("If you have any questions, feedback, or feature requests, just hit reply. We’re here to help you make the most of your TikTok data—entirely free during this demo! 🎁").append("\n\n");
-        body.append("Happy scraping! 🥳").append("\n\n");
-        body.append("—").append("\n");
-        body.append("The ScrapeTok Team").append("\n");
-        body.append("support@scrapetok.com").append("\n\n");
+
+        body.append("<div style=\"font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; color: #333; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);\">");
+
+        body.append("<h2 style=\"color: #7e22ce; text-align: center;\">🎉 ¡Bienvenido a ScrapeTok!</h2>");
+        body.append("<p>Hi there 😊,</p>");
+        body.append("<p>We’re thrilled to have you on board! 🚀 <strong>Welcome to ScrapeTok</strong>, where uncovering actionable TikTok insights is as easy as a scroll.</p>");
+
+        body.append("<p>Here’s what you can look forward to in this <strong style='color: #16a34a;'>DEMO version (100% free, on us!)</strong> 💯:</p>");
+
+        body.append("<ul style=\"padding-left: 1rem;\">");
+        body.append("<li><strong>📊 Instant Analytics:</strong><br/>Dive into dashboards that surface trending creators, hashtags, and metrics—no manual digging.</li><br/>");
+        body.append("<li><strong>🌟 General Scrape Feature (“Scrapeo General”):</strong><br/>See the top viral trends of the day, all in one place.</li><br/>");
+        body.append("<li><strong>🔍 Flexible Apify Scraping:</strong><br/>Filter by profile, hashtag, or keyword—get the TikTok content you need.</li><br/>");
+        body.append("<li><strong>💾 Data Export & Downloadable Charts:</strong><br/>Export your raw data as CSV and download charts for your reports.</li><br/>");
+        body.append("<li><strong>🛠️ Technical Support (Q&A with Admin):</strong><br/>Send support requests directly to our admins for fast, friendly help.</li>");
+        body.append("</ul>");
+
+        body.append("<p><strong>Ready to get started?</strong></p>");
+        body.append("<ul style=\"padding-left: 1rem;\">");
+        body.append("<li>✅ Log in to your dashboard</li>");
+        body.append("<li>📖 Check out our Quickstart Guide for tips</li>");
+        body.append("<li>💬 Join our community for best practices & direct support</li>");
+        body.append("</ul>");
+
+        body.append("<p>If you have any questions, feedback, or feature requests, just hit reply. We’re here to help you make the most of your TikTok data—<strong>entirely free during this demo</strong>! 🎁</p>");
+
+        body.append("<p style=\"margin-top: 30px;\">Happy scraping! 🥳</p>");
+
+        body.append("<p style=\"margin-top: 20px; font-weight: bold;\">— The ScrapeTok Team</p>");
+        body.append("<p style=\"color: #666; font-size: 0.9rem;\">support@scrapetok.com</p>");
+        body.append("</div>");
+
 
         try {
             GeneralAccount saved = generalAccountRepository.save(newUser);
@@ -99,7 +110,9 @@ public class AuthorizationService {
                     .replace("ROLE_", "");
 
             String token = jwtUtil.generateToken(userDetails.getUsername(), role);
-            applicationEventPublisher.publishEvent(new AlertEmailEvent(this, request.getEmail(), subject, body.toString()));
+            applicationEventPublisher.publishEvent(
+                    new WelcomeEmailEvent(this, request.getEmail(), subject, body.toString())
+            );
             UserSignUpResponseDTO dto = modelMapper.map(saved, UserSignUpResponseDTO.class);
             dto.setToken(token);
             dto.setRole(role);

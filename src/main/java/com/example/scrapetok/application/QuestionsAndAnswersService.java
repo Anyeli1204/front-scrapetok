@@ -14,6 +14,8 @@ import com.example.scrapetok.repository.QuestionAndAnswerRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -89,7 +91,10 @@ public class QuestionsAndAnswersService {
         adminProfileRepository.save(admin);
         return modelMapper.map(saved, FullAnswerQuestionResponseDTO.class);
     }
-
+    public Page<FullAnswerQuestionResponseDTO> getQuestions(Pageable pageable) {
+        Page<QuestAndAnswer> questions = questionAndAnswerRepository.findAll(pageable);
+        return questions.map(q -> modelMapper.map(q, FullAnswerQuestionResponseDTO.class));
+    }
 
     private ZonedDateTime obtenerFechaYHoraDePeru() {
         return ZonedDateTime.now(ZoneId.of("America/Lima"));

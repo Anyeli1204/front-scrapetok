@@ -4,6 +4,9 @@ import com.example.scrapetok.application.QuestionsAndAnswersService;
 import com.example.scrapetok.domain.DTO.UserQuestionRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,5 +29,17 @@ public class QuestionsController {
     @GetMapping("/getAllQuestions")
     public ResponseEntity<?> getAllQuestion() {
         return ResponseEntity.status(HttpStatus.OK).body(questionsAndAnswersService.getQuestions());
+    };
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/getQuestionsPaged")
+    public ResponseEntity<?> getQuestionsPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "questionDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir
+    ) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok(questionsAndAnswersService.getQuestions(pageable));
     };
 }
