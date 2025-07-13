@@ -2,6 +2,7 @@ package com.example.scrapetok.application;
 
 import com.example.scrapetok.domain.*;
 import com.example.scrapetok.domain.DTO.AdminProfileResponseDTO;
+import com.example.scrapetok.domain.DTO.UpdateInfoDTO;
 import com.example.scrapetok.domain.DTO.UserProfileResponseDTO;
 import com.example.scrapetok.domain.enums.ApifyRunStatus;
 import com.example.scrapetok.exception.ResourceNotFoundException;
@@ -97,5 +98,21 @@ public class UserAdminProfileService {
         }
         userProfile.setEmmitedAlerts(dailyAlerts);
         return userProfile;
+    }
+
+
+    public UpdateInfoDTO updateProfile(Long userId, UpdateInfoDTO request) {
+        GeneralAccount user = generalAccountRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " Not Found"));
+        if (!request.getFirstname().isEmpty()) {
+            user.setFirstname(request.getFirstname());
+        }
+        if (!request.getLastname().isEmpty()) {
+            user.setLastname(request.getLastname());
+        }
+        if (!request.getUsername().isEmpty()) {
+            user.setUsername(request.getUsername());
+        }
+        GeneralAccount saved =  generalAccountRepository.save(user);
+        return modelMapper.map(saved, UpdateInfoDTO.class);
     }
 }

@@ -7,10 +7,10 @@ CS2031 - Desarrollo Basado en Plataforma
 ## Integrantes
 
 | Name                        | Contact                    |
-| --------------------------- | -------------------------- |
-| Anyeli Azumi Tamara Ureta   | anyeli.tamara@utec.edu.pe  |
-| Bruno Gonzalo Vega Napan    | bruno.vega@utec.edu.pe     |
+|-----------------------------|----------------------------|
 | Gerard Deker Iruri Espinoza | gerard.iruri@utec.edu.pe   |
+| Bruno Gonzalo Vega Napan    | bruno.vega@utec.edu.pe     |
+| Anyeli Azumi Tamara Ureta   | anyeli.tamara@utec.edu.pe  |
 | Josue Carrillo Paurinotto   | josue.carrillo@utec.edu.pe |
 | Luis Enrique Cahuana Garcia | luis.cahuana@utec.edu.pe   |
 
