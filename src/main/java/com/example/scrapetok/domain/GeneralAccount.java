@@ -56,4 +56,10 @@ public class GeneralAccount {
 
     @ManyToMany(mappedBy = "userEmails")
     private Set<DailyAlerts> receivedAlerts = new HashSet<>();
+
+    @Column(nullable = false)
+    private boolean subscriptionActive = false;
+
+    @Column
+    private String subscriptionTier;
 }
