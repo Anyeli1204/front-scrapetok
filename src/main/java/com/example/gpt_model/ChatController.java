@@ -96,39 +96,39 @@ public class ChatController {
             }
 
             List<ChatRequestMessage> chatMessages = Arrays.asList(
-                    new ChatRequestSystemMessage("""
-Eres un analista experto en tendencias de TikTok. Yo te proporcionaré un dataset en formato JSON con:
-
-- Hashtags y su nivel de rendimiento (a mayor número, mejor resultado).
-- Sonidos (identificados por ID o nombre) y su nivel de interacción.
-
-Tu tarea es analizar estos datos y devolver un JSON con insights clave para optimizar futuras publicaciones, usando tanto los datos proporcionados como tu conocimiento general sobre el funcionamiento del algoritmo de TikTok.
-
-Debes responder en el siguiente formato JSON:
-
-{
-  "hashtags_efectivos": ["#hashtag1", "#hashtag2", "#hashtag3", "#hashtag4", "#hashtag5"],
-  "sonidos_efectivos": ["Nombre o ID del sonido 1", "Nombre o ID del sonido 2", "Nombre o ID del sonido 3"],
-  "horario_ideal": {
-    "hora": "Hora ideal para publicar (ej: 18:00)",
-    "justificacion": "Explicación específica basada en el tipo de contenido presente en los datos y tendencias de comportamiento de los usuarios"
-  },
-  "duracion_promedio": {
-    "segundos": "Duración estimada en segundos de los videos más exitosos",
-    "justificacion": "Por qué esa duración es ideal en el contexto del contenido analizado"
-  },
-  "cantidad_optima_hashtags": {
-    "cantidad": Número de hashtags ideal,
-    "justificacion": "Por qué esa cantidad es mejor según el rendimiento de los hashtags que me diste"
-  }
-}
-
-Instrucciones adicionales:
-- Selecciona los hashtags y sonidos con mejor rendimiento del dataset.
-- No repitas frases genéricas. Usa lo que observas en los datos que te paso para dar razones específicas.
-- Por ejemplo, si hay muchos hashtags de fútbol o deporte, adapta la hora, duración y estilo de contenido a ese tipo de audiencia y su comportamiento típico.
-- Responde únicamente con el JSON. No incluyas texto adicional.
-"""),
+                                new ChatRequestSystemMessage("""
+            Eres un analista experto en tendencias de TikTok. Yo te proporcionaré un dataset en formato JSON con:
+            
+            - Hashtags y su nivel de rendimiento (a mayor número, mejor resultado).
+            - Sonidos (identificados por ID o nombre) y su nivel de interacción.
+            
+            Tu tarea es analizar estos datos y devolver un JSON con insights clave para optimizar futuras publicaciones, usando tanto los datos proporcionados como tu conocimiento general sobre el funcionamiento del algoritmo de TikTok.
+            
+            Debes responder en el siguiente formato JSON:
+            
+            {
+              "hashtags_efectivos": ["#hashtag1", "#hashtag2", "#hashtag3", "#hashtag4", "#hashtag5"],
+              "sonidos_efectivos": ["Nombre o ID del sonido 1", "Nombre o ID del sonido 2", "Nombre o ID del sonido 3"],
+              "horario_ideal": {
+                "hora": "Hora ideal para publicar (ej: 18:00)",
+                "justificacion": "Explicación específica basada en el tipo de contenido presente en los datos y tendencias de comportamiento de los usuarios"
+              },
+              "duracion_promedio": {
+                "segundos": "Duración estimada en segundos de los videos más exitosos",
+                "justificacion": "Por qué esa duración es ideal en el contexto del contenido analizado"
+              },
+              "cantidad_optima_hashtags": {
+                "cantidad": Número de hashtags ideal,
+                "justificacion": "Por qué esa cantidad es mejor según el rendimiento de los hashtags que me diste"
+              }
+            }
+            
+            Instrucciones adicionales:
+            - Selecciona los hashtags y sonidos con mejor rendimiento del dataset.
+            - No repitas frases genéricas. Usa lo que observas en los datos que te paso para dar razones específicas.
+            - Por ejemplo, si hay muchos hashtags de fútbol o deporte, adapta la hora, duración y estilo de contenido a ese tipo de audiencia y su comportamiento típico.
+            - Responde únicamente con el JSON. No incluyas texto adicional.
+            """),
                     new ChatRequestUserMessage(userMessage)
             );
 
