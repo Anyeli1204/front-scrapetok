@@ -48,7 +48,7 @@ public class ChatController {
             String userMessage = request.get("message");
 
             if (userMessage == null || userMessage.trim().isEmpty()) {
-                return Map.of("error", "El mensaje no puede estar vacío");
+                return Map.of("error", "El mensaje no debe estar vacío");
             }
 
             List<ChatRequestMessage> chatMessages = Arrays.asList(
@@ -92,7 +92,7 @@ public class ChatController {
             String userMessage = request.get("message");
 
             if (userMessage == null || userMessage.trim().isEmpty()) {
-                return Map.of("error", "El mensaje no puede estar vacío");
+                return Map.of("error", "El mensaje no debe estar vacío");
             }
 
             List<ChatRequestMessage> chatMessages = Arrays.asList(
@@ -151,7 +151,7 @@ public class ChatController {
             String userMessage = request.get("message");
 
             if (userMessage == null || userMessage.trim().isEmpty()) {
-                return Map.of("error", "El mensaje no puede estar vacío");
+                return Map.of("error", "El mensaje no debe estar vacío");
             }
 
             List<ChatRequestMessage> chatMessages = Arrays.asList(
