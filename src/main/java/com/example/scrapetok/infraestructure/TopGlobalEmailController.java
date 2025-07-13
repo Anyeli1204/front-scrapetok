@@ -1,5 +1,6 @@
 package com.example.scrapetok.infraestructure;
 
+import com.example.scrapetok.application.DashboardService;
 import com.example.scrapetok.application.TopGlobalEmailService;
 import com.example.scrapetok.domain.DTO.TopGlobalEmailDTO;
 import jakarta.validation.Valid;
@@ -13,15 +14,20 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
-@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin")
 public class TopGlobalEmailController {
     @Autowired
     private TopGlobalEmailService topGlobalEmailService;
+    @Autowired
+    private DashboardService dashboardService;
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/sendemail")
     public ResponseEntity<String> sendEmail(@RequestBody @Valid List<TopGlobalEmailDTO> request) {
+        dashboardService.publishData(request);
         topGlobalEmailService.sendTopGlobalTextEmail(request);
-        return ResponseEntity.status(HttpStatus.OK).body("✅ Top daily global emails have been sent successfully.\"");
+        return ResponseEntity.status(HttpStatus.OK).body("✅ Top daily global emails have been sent successfully and has been published\"");
     }
+
 }

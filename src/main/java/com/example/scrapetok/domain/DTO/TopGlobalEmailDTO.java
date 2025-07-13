@@ -1,5 +1,6 @@
 package com.example.scrapetok.domain.DTO;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +14,8 @@ public class TopGlobalEmailDTO {
     private Long adminId;
     @NotBlank
     private String usedHashTag;
+    @NotNull
+    private String postId;
     @NotNull
     private LocalDate datePosted;
     @NotBlank
