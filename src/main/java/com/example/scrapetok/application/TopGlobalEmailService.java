@@ -54,7 +54,7 @@ public class TopGlobalEmailService {
 
         for (TopGlobalEmailDTO post : posts) {
             body.append("<div style=\"border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 20px; background-color: #fafafa;\">");
-            body.append("<h3 style=\"margin-top: 0; color: #4ba3c7;\">#").append(post.getUsedHashTag()).append("</h3>");
+            body.append("<h3 style=\"margin-top: 0; color: #4ba3c7;\">").append(post.getUsedHashTag()).append("</h3>");
             body.append("<p><strong>🎬 Creador:</strong> @").append(post.getUsernameTiktokAccount()).append("</p>");
             body.append("<p><strong>📅 Fecha:</strong> ").append(post.getDatePosted()).append("</p>");
             body.append("<p><strong>👀 Vistas:</strong> ").append(String.format("%,d", post.getViews())).append("</p>");

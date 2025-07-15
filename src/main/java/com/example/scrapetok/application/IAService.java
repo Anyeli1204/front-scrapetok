@@ -26,7 +26,6 @@ public class IAService {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @Value("${github.token}")
     private String githubToken;
 
@@ -153,7 +152,7 @@ public class IAService {
             return Map.of("error", "Error al procesar la solicitud: " + e.getMessage());
         }
     }
-    
+
     public Map<String, String> chat3(Map<String, String> request) {
         try {
             String userMessage = request.get("message");
