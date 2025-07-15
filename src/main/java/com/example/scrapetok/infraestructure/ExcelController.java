@@ -34,10 +34,25 @@ public class ExcelController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", "tiktok_metrics.xlsx");
+            // Agregar headers específicos para CORS y archivos binarios
+            headers.set("Access-Control-Expose-Headers", "Content-Disposition");
+            headers.set("Access-Control-Allow-Origin", "*");
+            headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+            headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
             return ResponseEntity.ok().headers(headers).body(excelFile);
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("❌ Error al generar el archivo Excel.".getBytes());
         }
+    }
+
+    @RequestMapping(value = "/excel/download", method = RequestMethod.OPTIONS)
+    public ResponseEntity<Void> handleOptions() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+        headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        headers.set("Access-Control-Max-Age", "3600");
+        return ResponseEntity.ok().headers(headers).build();
     }
 
 }
