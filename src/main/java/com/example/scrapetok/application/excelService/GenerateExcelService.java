@@ -84,13 +84,19 @@ public class GenerateExcelService {
                 System.out.println("🔄 Procesando " + data.size() + " filas de datos...");
                 
                 for (int i = 0; i < data.size(); i++) {
-                    Map<String, Object> rowData = data.get(i);
-                    Row row = sheet.createRow(rowIndex++);
-                    
-                    // Log de progreso cada 5 filas
-                    if (i % 5 == 0) {
-                        System.out.println("📝 Procesando fila " + (i + 1) + " de " + data.size());
-                    }
+                    try {
+                        Map<String, Object> rowData = data.get(i);
+                        Row row = sheet.createRow(rowIndex++);
+                        
+                        // Log de progreso cada 5 filas
+                        if (i % 5 == 0) {
+                            System.out.println("📝 Procesando fila " + (i + 1) + " de " + data.size());
+                        }
+                        
+                        // Log específico para las últimas filas donde parece fallar
+                        if (i >= data.size() - 4) {
+                            System.out.println("🔍 Procesando fila crítica " + (i + 1) + " de " + data.size());
+                        }
                     
                     for (int col = 0; col < columns.size(); col++) {
                         try {
@@ -141,35 +147,53 @@ public class GenerateExcelService {
                             // Continuar con la siguiente celda
                         }
                     }
+                } catch (Exception e) {
+                    System.err.println("❌ Error procesando fila " + i + ": " + e.getMessage());
+                    e.printStackTrace();
+                    throw new IOException("Error procesando fila " + i + ": " + e.getMessage());
+                }
                 }
 
+                System.out.println("🔄 Ajustando ancho de columnas...");
                 // Ajustar automáticamente el ancho de las columnas
                 final int MAX_COLUMN_WIDTH = 65280;
                 for (int col = 0; col < columns.size(); col++) {
-                    sheet.autoSizeColumn(col);
+                    try {
+                        sheet.autoSizeColumn(col);
 
-                    // Obtenemos el ancho calculado
-                    int currentWidth = sheet.getColumnWidth(col);
-                    // Sumamos un poco para que se vea más espacioso
-                    int extraWidth = 2000;  // Ajusta según tu preferencia
-                    int newWidth = currentWidth + extraWidth;
-                    // Evitamos superar el límite máximo
-                    if (newWidth > MAX_COLUMN_WIDTH) {
-                        newWidth = MAX_COLUMN_WIDTH;
+                        // Obtenemos el ancho calculado
+                        int currentWidth = sheet.getColumnWidth(col);
+                        // Sumamos un poco para que se vea más espacioso
+                        int extraWidth = 2000;  // Ajusta según tu preferencia
+                        int newWidth = currentWidth + extraWidth;
+                        // Evitamos superar el límite máximo
+                        if (newWidth > MAX_COLUMN_WIDTH) {
+                            newWidth = MAX_COLUMN_WIDTH;
+                        }
+                        // Establecemos el nuevo ancho
+                        sheet.setColumnWidth(col, newWidth);
+                    } catch (Exception e) {
+                        System.err.println("❌ Error ajustando columna " + col + ": " + e.getMessage());
                     }
-                    // Establecemos el nuevo ancho
-                    sheet.setColumnWidth(col, newWidth);
                 }
+                System.out.println("✅ Ajuste de columnas completado");
 
+                System.out.println("🔄 Ajustando altura de filas...");
                 // Ajustar el alto de las filas (por defecto, desde la 1 hasta la última)
                 for (int i = 0; i <= sheet.getLastRowNum(); i++) {
-                    Row row = sheet.getRow(i);
-                    if (row != null) {
-                        // Ajusta la altura a 50 puntos (puedes cambiarlo)
-                        row.setHeightInPoints(45);
+                    try {
+                        Row row = sheet.getRow(i);
+                        if (row != null) {
+                            // Ajusta la altura a 50 puntos (puedes cambiarlo)
+                            row.setHeightInPoints(45);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("❌ Error ajustando fila " + i + ": " + e.getMessage());
                     }
                 }
-
+                System.out.println("✅ Ajuste de filas completado");
+                
+                System.out.println("✅ Procesamiento de filas completado exitosamente");
                 System.out.println("🔄 Escribiendo archivo Excel...");
                 
                 // Obtener timestamp para generar nombre único del archivo
