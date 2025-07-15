@@ -43,7 +43,7 @@ public class TopGlobalEmailService {
             throw new ResourceNotFoundException("No hay usuarios registrados para recibir el correo.");
         }
 
-        String subject = "ScrapeTok: 🌍 Today’s Top Global TikTok Hits by Hashtag / KeyWord";
+        String subject = "ScrapeTok: 🌍 Top éxitos globales de TikTok de hoy por hashtag / palabra clave";
         StringBuilder body = new StringBuilder();
         body.append("<div style=\"font-family: 'Segoe UI', sans-serif; color: #333; padding: 10px; max-width: 600px; margin: auto;\">");
 
