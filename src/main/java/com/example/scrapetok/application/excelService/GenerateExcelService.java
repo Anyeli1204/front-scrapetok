@@ -16,7 +16,7 @@ import java.util.*;
 @Service
 public class GenerateExcelService {
     public byte[] downloadExcel(List<Map<String, Object>> data) throws IOException {
-            //logger.info("📊 Datos recibidos en ExcelService: " + data);
+            System.out.println("📊 ExcelService - Datos recibidos: " + data.size() + " registros");
             // Usa Apache POI para crear y llenar un archivo Excel
             try (XSSFWorkbook workbook = new XSSFWorkbook();
                  ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {

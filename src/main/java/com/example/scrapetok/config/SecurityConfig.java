@@ -59,12 +59,39 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(corsProperties.getAllowedOrigins());
+        
+        // Obtener orígenes permitidos desde la configuración
+        List<String> allowedOrigins = corsProperties.getAllowedOrigins();
+        configuration.setAllowedOrigins(allowedOrigins);
+        
+        // Configurar métodos permitidos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
-        configuration.setExposedHeaders(List.of("Content-Disposition", "Content-Length", "Content-Type"));
+        
+        // Configurar headers permitidos
+        configuration.setAllowedHeaders(List.of(
+            "Authorization", 
+            "Content-Type", 
+            "Accept", 
+            "Origin", 
+            "X-Requested-With",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+        ));
+        
+        // Configurar headers expuestos (importante para descargas)
+        configuration.setExposedHeaders(List.of(
+            "Content-Disposition", 
+            "Content-Length", 
+            "Content-Type"
+        ));
+        
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
+        
+        // Log para debugging
+        System.out.println("🚀 CORS Configuration loaded successfully");
+        System.out.println("📍 Allowed Origins: " + allowedOrigins);
+        System.out.println("🔧 Environment: " + System.getenv("SPRING_PROFILES_ACTIVE"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

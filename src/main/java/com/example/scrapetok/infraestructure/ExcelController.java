@@ -24,35 +24,38 @@ public class ExcelController {
     @Autowired
     private GenerateExcelService generateExcelService;
 
+    @GetMapping("/excel/test")
+    public ResponseEntity<String> testExcelEndpoint() {
+        System.out.println("🧪 Excel test endpoint called");
+        return ResponseEntity.ok("✅ Excel endpoint is working!");
+    }
+
     @PostMapping("/excel/download")
     public ResponseEntity<byte[]> downloadExcel(@RequestBody List<Map<String, Object>> request) {
+        System.out.println("🚀 Excel download endpoint called");
+        System.out.println("📊 Request data size: " + (request != null ? request.size() : "null"));
+        
         if (request == null || request.isEmpty()) {
+            System.out.println("⚠️ Request is null or empty");
             return ResponseEntity.badRequest().body("⚠️ No hay datos para exportar a Excel.".getBytes());
         }
+        
         try {
+            System.out.println("🔄 Starting Excel generation...");
             byte[] excelFile = generateExcelService.downloadExcel(request);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", "tiktok_metrics.xlsx");
-            // Agregar headers específicos para CORS y archivos binarios
-            headers.set("Access-Control-Expose-Headers", "Content-Disposition");
-            headers.set("Access-Control-Allow-Origin", "*");
-            headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-            headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            
+            System.out.println("✅ Excel download request processed successfully");
+            System.out.println("📁 File size: " + excelFile.length + " bytes");
+            
             return ResponseEntity.ok().headers(headers).body(excelFile);
         } catch (IOException e) {
+            System.err.println("❌ Error generating Excel file: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body("❌ Error al generar el archivo Excel.".getBytes());
         }
-    }
-
-    @RequestMapping(value = "/excel/download", method = RequestMethod.OPTIONS)
-    public ResponseEntity<Void> handleOptions() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Access-Control-Allow-Origin", "*");
-        headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-        headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        headers.set("Access-Control-Max-Age", "3600");
-        return ResponseEntity.ok().headers(headers).build();
     }
 
 }
