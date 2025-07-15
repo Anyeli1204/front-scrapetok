@@ -42,7 +42,14 @@ public class ExcelController {
         
         try {
             System.out.println("🔄 Starting Excel generation...");
+            
+            // Agregar timeout para evitar que se cuelgue
+            long startTime = System.currentTimeMillis();
             byte[] excelFile = generateExcelService.downloadExcel(request);
+            long endTime = System.currentTimeMillis();
+            
+            System.out.println("⏱️ Excel generation took: " + (endTime - startTime) + "ms");
+            
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", "tiktok_metrics.xlsx");
@@ -55,6 +62,10 @@ public class ExcelController {
             System.err.println("❌ Error generating Excel file: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("❌ Error al generar el archivo Excel.".getBytes());
+        } catch (Exception e) {
+            System.err.println("❌ Unexpected error generating Excel file: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("❌ Error inesperado al generar el archivo Excel.".getBytes());
         }
     }
 
